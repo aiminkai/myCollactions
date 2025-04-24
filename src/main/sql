@@ -1,0 +1,8 @@
+select  fd.id from my_test.folder fd left join my_test.file fl on fd.id = fl.folder_id where fl.id is null or fl.name like '%.avi%';
+
+EXPLAIN analyze select distinct fd.* from my_test.folder fd left join my_test.file fl on fd.id = fl.folder_id where fl.name like '%.avi%' or fl.folder_id is null;
+
+SELECT fd.*
+FROM my_test.folder fd
+WHERE NOT EXISTS (SELECT 1 FROM my_test.file fl WHERE fl.folder_id = fd.id)
+   OR EXISTS (SELECT 1 FROM my_test.file fl WHERE fl.folder_id = fd.id AND fl.name LIKE '%.avi%');
